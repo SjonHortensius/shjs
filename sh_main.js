@@ -27,28 +27,6 @@ function sh_setHref(tags, numTags, inputString) {
   tags[numTags - 2].node.href = url;
 }
 
-/*
-Konqueror has a bug where the regular expression /$/g will not match at the end
-of a line more than once:
-
-  var regex = /$/g;
-  var match;
-
-  var line = '1234567890';
-  regex.lastIndex = 10;
-  match = regex.exec(line);
-
-  var line2 = 'abcde';
-  regex.lastIndex = 5;
-  match = regex.exec(line2);  // fails
-*/
-function sh_konquerorExec(s) {
-  var result = [''];
-  result.index = s.length;
-  result.input = s;
-  return result;
-}
-
 /**
 Highlights all elements containing source code in a text string.  The return
 value is an array of objects, each representing an HTML start or end tag.  Each
@@ -60,20 +38,6 @@ DOM element started by the tag. End tags do not have this property.
 @return  an array of tag objects
 */
 function sh_highlightString(inputString, language) {
-  if (/Konqueror/.test(navigator.userAgent)) {
-    if (! language.konquered) {
-      for (var s = 0; s < language.length; s++) {
-        for (var p = 0; p < language[s].length; p++) {
-          var r = language[s][p][0];
-          if (r.source === '$') {
-            r.exec = sh_konquerorExec;
-          }
-        }
-      }
-      language.konquered = true;
-    }
-  }
-
   var a = document.createElement('a');
   var span = document.createElement('span');
 
@@ -253,145 +217,6 @@ function sh_highlightString(inputString, language) {
 ////////////////////////////////////////////////////////////////////////////////
 // DOM-dependent functions
 
-function sh_getClasses(element) {
-  var result = [];
-  var htmlClass = element.className;
-  if (htmlClass && htmlClass.length > 0) {
-    var htmlClasses = htmlClass.split(' ');
-    for (var i = 0; i < htmlClasses.length; i++) {
-      if (htmlClasses[i].length > 0) {
-        result.push(htmlClasses[i]);
-      }
-    }
-  }
-  return result;
-}
-
-function sh_addClass(element, name) {
-  var htmlClasses = sh_getClasses(element);
-  for (var i = 0; i < htmlClasses.length; i++) {
-    if (name.toLowerCase() === htmlClasses[i].toLowerCase()) {
-      return;
-    }
-  }
-  htmlClasses.push(name);
-  element.className = htmlClasses.join(' ');
-}
-
-/**
-Extracts the tags from an HTML DOM NodeList.
-@param  nodeList  a DOM NodeList
-@param  result  an object with text, tags and pos properties
-*/
-function sh_extractTagsFromNodeList(nodeList, result) {
-  var length = nodeList.length;
-  for (var i = 0; i < length; i++) {
-    var node = nodeList.item(i);
-    switch (node.nodeType) {
-    case 1:
-      if (node.nodeName.toLowerCase() === 'br') {
-        var terminator;
-        if (/MSIE/.test(navigator.userAgent)) {
-          terminator = '\r';
-        }
-        else {
-          terminator = '\n';
-        }
-        result.text.push(terminator);
-        result.pos++;
-      }
-      else {
-        result.tags.push({node: node.cloneNode(false), pos: result.pos});
-        sh_extractTagsFromNodeList(node.childNodes, result);
-        result.tags.push({pos: result.pos});
-      }
-      break;
-    case 3:
-    case 4:
-      result.text.push(node.data);
-      result.pos += node.length;
-      break;
-    }
-  }
-}
-
-/**
-Extracts the tags from the text of an HTML element. The extracted tags will be
-returned as an array of tag objects. See sh_highlightString for the format of
-the tag objects.
-@param  element  a DOM element
-@param  tags  an empty array; the extracted tag objects will be returned in it
-@return  the text of the element
-@see  sh_highlightString
-*/
-function sh_extractTags(element, tags) {
-  var result = {};
-  result.text = [];
-  result.tags = tags;
-  result.pos = 0;
-  sh_extractTagsFromNodeList(element.childNodes, result);
-  return result.text.join('');
-}
-
-/**
-Merges the original tags from an element with the tags produced by highlighting.
-@param  originalTags  an array containing the original tags
-@param  highlightTags  an array containing the highlighting tags - these must not overlap
-@result  an array containing the merged tags
-*/
-function sh_mergeTags(originalTags, highlightTags) {
-  var numOriginalTags = originalTags.length;
-  if (numOriginalTags === 0) {
-    return highlightTags;
-  }
-
-  var numHighlightTags = highlightTags.length;
-  if (numHighlightTags === 0) {
-    return originalTags;
-  }
-
-  var result = [];
-  var originalIndex = 0;
-  var highlightIndex = 0;
-
-  while (originalIndex < numOriginalTags && highlightIndex < numHighlightTags) {
-    var originalTag = originalTags[originalIndex];
-    var highlightTag = highlightTags[highlightIndex];
-
-    if (originalTag.pos <= highlightTag.pos) {
-      result.push(originalTag);
-      originalIndex++;
-    }
-    else {
-      result.push(highlightTag);
-      if (highlightTags[highlightIndex + 1].pos <= originalTag.pos) {
-        highlightIndex++;
-        result.push(highlightTags[highlightIndex]);
-        highlightIndex++;
-      }
-      else {
-        // new end tag
-        result.push({pos: originalTag.pos});
-
-        // new start tag
-        highlightTags[highlightIndex] = {node: highlightTag.node.cloneNode(false), pos: originalTag.pos};
-      }
-    }
-  }
-
-  while (originalIndex < numOriginalTags) {
-    result.push(originalTags[originalIndex]);
-    originalIndex++;
-  }
-
-  while (highlightIndex < numHighlightTags) {
-    result.push(highlightTags[highlightIndex]);
-    highlightIndex++;
-  }
-
-  return result;
-}
-
 /**
 Inserts tags into text.
 @param  tags  an array of tag objects
@@ -451,88 +276,11 @@ the element will have been placed in the "sh_sourceCode" class.
 @param  language  a language definition object
 */
 function sh_highlightElement(element, language) {
-  sh_addClass(element, 'sh_sourceCode');
-  var originalTags = [];
-  var inputString = sh_extractTags(element, originalTags);
-  var highlightTags = sh_highlightString(inputString, language);
-  var tags = sh_mergeTags(originalTags, highlightTags);
-  var documentFragment = sh_insertTags(tags, inputString);
+  element.classList.add('sh_sourceCode');
+  var highlightTags = sh_highlightString(element.textContent, language);
+  var documentFragment = sh_insertTags(highlightTags, element.textContent);
   while (element.hasChildNodes()) {
     element.removeChild(element.firstChild);
   }
   element.appendChild(documentFragment);
-}
-
-function sh_getXMLHttpRequest() {
-  if (window.ActiveXObject) {
-    return new ActiveXObject('Msxml2.XMLHTTP');
-  }
-  else if (window.XMLHttpRequest) {
-    return new XMLHttpRequest();
-  }
-  throw 'No XMLHttpRequest implementation available';
-}
-
-function sh_load(language, element, prefix, suffix) {
-  if (language in sh_requests) {
-    sh_requests[language].push(element);
-    return;
-  }
-  sh_requests[language] = [element];
-  var request = sh_getXMLHttpRequest();
-  var url = prefix + 'sh_' + language + suffix;
-  request.open('GET', url, true);
-  request.onreadystatechange = function () {
-    if (request.readyState === 4) {
-      try {
-        if (! request.status || request.status === 200) {
-          eval(request.responseText);
-          var elements = sh_requests[language];
-          for (var i = 0; i < elements.length; i++) {
-            sh_highlightElement(elements[i], sh_languages[language]);
-          }
-        }
-        else {
-          throw 'HTTP error: status ' + request.status;
-        }
-      }
-      finally {
-        request = null;
-      }
-    }
-  };
-  request.send(null);
-}
-
-/**
-Highlights all elements containing source code on the current page. Elements
-containing source code must be "pre" elements with a "class" attribute of
-"sh_LANGUAGE", where LANGUAGE is a valid language identifier; e.g., "sh_java"
-identifies the element as containing "java" language source code.
-*/
-function sh_highlightDocument(prefix, suffix) {
-  var nodeList = document.getElementsByTagName('pre');
-  for (var i = 0; i < nodeList.length; i++) {
-    var element = nodeList.item(i);
-    var htmlClasses = sh_getClasses(element);
-    for (var j = 0; j < htmlClasses.length; j++) {
-      var htmlClass = htmlClasses[j].toLowerCase();
-      if (htmlClass === 'sh_sourcecode') {
-        continue;
-      }
-      if (htmlClass.substr(0, 3) === 'sh_') {
-        var language = htmlClass.substring(3);
-        if (language in sh_languages) {
-          sh_highlightElement(element, sh_languages[language]);
-        }
-        else if (typeof(prefix) === 'string' && typeof(suffix) === 'string') {
-          sh_load(language, element, prefix, suffix);
-        }
-        else {
-          throw 'Found <pre> element with class="' + htmlClass + '", but no such language exists';
-        }
-        break;
-      }
-    }
-  }
 }

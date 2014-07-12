@@ -1,137 +1,137 @@
-pre.sh_sourceCode {
+.sh_sourceCode {
   background-color: #ffdab9;
   color: #000000;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_keyword {
+.sh_sourceCode .sh_keyword {
   color: #a52a2a;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_type {
+.sh_sourceCode .sh_type {
   color: #2e8b57;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_string {
+.sh_sourceCode .sh_string {
   color: #c00058;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_regexp {
+.sh_sourceCode .sh_regexp {
   color: #c00058;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_specialchar {
+.sh_sourceCode .sh_specialchar {
   color: #6a5acd;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_comment {
+.sh_sourceCode .sh_comment {
   color: #406090;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_number {
+.sh_sourceCode .sh_number {
   color: #c00058;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_preproc {
+.sh_sourceCode .sh_.roc {
   color: #cd00cd;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_function {
+.sh_sourceCode .sh_function {
   color: #521cc7;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_url {
+.sh_sourceCode .sh_url {
   color: #c00058;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_date {
+.sh_sourceCode .sh_date {
   color: #a52a2a;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_time {
+.sh_sourceCode .sh_time {
   color: #a52a2a;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_file {
+.sh_sourceCode .sh_file {
   color: #a52a2a;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_ip {
+.sh_sourceCode .sh_ip {
   color: #c00058;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_name {
+.sh_sourceCode .sh_name {
   color: #c00058;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_variable {
+.sh_sourceCode .sh_variable {
   color: #275fec;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_oldfile {
+.sh_sourceCode .sh_oldfile {
   color: #6a5acd;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_newfile {
+.sh_sourceCode .sh_newfile {
   color: #c00058;
   font-weight: normal;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_difflines {
+.sh_sourceCode .sh_difflines {
   color: #a52a2a;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_selector {
+.sh_sourceCode .sh_selector {
   color: #275fec;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_property {
+.sh_sourceCode .sh_property {
   color: #a52a2a;
   font-weight: bold;
   font-style: normal;
 }
 
-pre.sh_sourceCode .sh_value {
+.sh_sourceCode .sh_value {
   color: #c00058;
   font-weight: normal;
   font-style: normal;
