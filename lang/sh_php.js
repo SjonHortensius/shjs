@@ -34,7 +34,7 @@ sh_languages['php'] = [
       3
     ],
     [
-      /\b(?:(a(bstract|nd|rray|s))|(c(a(llable|se|tch)|l(ass|one)|on(st|tinue)))|(d(e(clare|fault)|ie|o))|(e(cho|lse(if)?|mpty|nd(declare|for(each)?|if|switch|while)|val|x(it|tends)))|(f(inal|or(each)?|unction))|(g(lobal|oto))|(i(f|mplements|n(clude(_once)?|st(anceof|eadof)|terface)|sset))|(n(amespace|ew))|(p(r(i(nt|vate)|otected)|ublic))|(re(quire(_once)?|turn))|(s(tatic|witch))|(t(hrow|r(ait|y)))|(u(nset|se))|(__halt_compiler|break|list|(x)?or|var|while))\b/g,
+      /\b(?:(a(bstract|nd|rray|s))|(c(a(llable|se|tch)|l(ass|one)|on(st|tinue)))|(d(e(clare|fault)|ie|o))|(e(cho|lse(if)?|mpty|nd(declare|for(each)?|if|switch|while)|val|x(it|tends)))|(f(inal|or(each)?|unction))|global|goto|(i(f|mplements|n(clude(_once)?|st(anceof|eadof)|terface)|sset))|namespace|new|(p(r(i(nt|vate)|otected)|ublic))|(re(quire(_once)?|turn))|static|switch|throw|trait|try|unset|use|__halt_compiler|break|list|(x)?or|var|while)\b/g,
       'sh_keyword',
       -1
     ],
